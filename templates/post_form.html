@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}
+{{post.title}}
+{% endblock %}
+{% block content %}
+<form method="post">
+    {{ form.csrf_token }}
+    {{ form.title.label }}
+    {{ form.title }}
+    <br>
+    <br>
+    {{ form.body.label }}
+    {{ form.body }}
+    <br>
+    <br>
+    {{ form.is_published }}
+</form>
+{% endblock %}
