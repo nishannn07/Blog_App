@@ -4,20 +4,18 @@ Base = declarative_base()
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    username  = Column(String)
-    _email = Column(String)
-
+    _email = Column('email', String, nullable=False)
     @property
-    def getEmail(self):
+    def email(self):
         return self._email
-    
-    @getEmail.setter
-    def setEmail(self, email):
-        if '@' not in email:
-            raise ValueError("Wrong Email format")
-        
-        self._email = email
-    
+    @email.setter
+    def email(self, value):
+        """
+        Validate email format and normalize.
+        """
+        cleaned = value.strip().lower()
+        if '@' not in cleaned:
+            raise ValueError("Invalid email address")
+        self._email = cleaned
     def __repr__(self):
         return f"{self.id}, {self.username}, {self._email}"

@@ -1,6 +1,5 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, BooleanField, SubmitField
-from flask import Flask, render_template
 from wtforms.validators import DataRequired, Length
 
 class PostForm(FlaskForm):

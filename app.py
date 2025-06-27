@@ -1,24 +1,24 @@
 import os
 import json
 from flask import Flask, request, render_template, flash, redirect, url_for
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from models.base import Base
-from models.user import User
-from models.post import Post
-from models.tag import Tag
+
+from models.base import Base, engine
 from routes.post_routes import post_bp
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-engine = create_engine('sqlite:///blog.db')
-Base.metadata.create_all(engine)
+
 DATA_FILE = 'data.json'
 if not os.path.exists(DATA_FILE):
     with open(DATA_FILE, 'w') as f:
         json.dump({}, f)
 
 app.register_blueprint(post_bp)
+import models.post
+import models.user
+import models.tag
+import models.association
+Base.metadata.create_all(engine)
 
 
 @app.route('/', methods=['POST', 'GET'])

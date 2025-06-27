@@ -1,3 +1,5 @@
-from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Table
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+engine = create_engine('sqlite:///blog.db')
+Session = sessionmaker(bind=engine)
 Base = declarative_base()
