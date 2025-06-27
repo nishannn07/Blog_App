@@ -1,35 +1,31 @@
-from project.app import db
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text
+from sqlalchemy.orm import relationship
+from .base import Base
 from .mixins import TimestampMixin
 from .association import post_tags
-from sqlalchemy.orm import relationship
 
-class Post(db.Model, TimestampMixin):
+class Post(Base, TimestampMixin):
     __tablename__ = 'posts'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(150), nullable=False)
-    body = db.Column(db.Text, nullable=False)
-    is_published = db.Column(db.Boolean, default=False, nullable=False)
+
+    id = Column(Integer, primary_key=True)
+    title = Column(String(150), nullable=False)
+    body = Column(Text, nullable=False)
+    is_published = Column(Boolean, default=False, nullable=False)
     
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    author_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     author = relationship('User', back_populates='posts')
     
     tags = relationship('Tag', secondary=post_tags, back_populates='posts')
 
     def publish(self):
-        """Mark post as published and save to DB."""
         if self.is_published:
             raise ValueError("Post is already published.")
         self.is_published = True
-        db.session.add(self)
-        db.session.commit()
 
     def unpublish(self):
-        """Mark post as a draft and save to DB."""
         if not self.is_published:
             raise ValueError("Post is already a draft.")
         self.is_published = False
-        db.session.add(self)
-        db.session.commit()
 
     def __repr__(self):
         return f"<Post id={self.id} title={self.title!r}>"

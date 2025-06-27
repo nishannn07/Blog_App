@@ -1,18 +1,26 @@
-{% extends 'base.html' %}
-{% block title %}
-{{post.title}}
-{% endblock %}
+{% extends "base.html" %}
+
 {% block content %}
-<form method="post">
-    {{ form.csrf_token }}
-    {{ form.title.label }}
-    {{ form.title }}
-    <br>
-    <br>
-    {{ form.body.label }}
-    {{ form.body }}
-    <br>
-    <br>
-    {{ form.is_published }}
-</form>
+
+    <h1>Create New Post</h1>
+    <form method="POST" action="{{ url_for('posts.new_post') }}">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.title.label }}<br>
+            {{ form.title(size=32) }}
+            {% endif %}
+        </p>
+        <p>
+            {{ form.body.label }}<br>
+            {{ form.body(rows=8, cols=50) }}
+            {% endif %}
+        </p>
+        <p>
+            {{ form.is_published() }} {{ form.is_published.label }}
+        </p>
+        <p>
+            {{ form.submit() }}
+        </p>
+    </form>
+    
 {% endblock %}
