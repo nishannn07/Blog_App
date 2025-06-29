@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+        <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap 5 JS (needed for navbar toggler) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .post-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            border: 2px solid #6366f1;
+            margin: 50px auto;
+            max-height: 800px;
+            border-radius: 10px;
+            padding: 20px;
+            gap: 20px;
+            width: 90%;
+        }
+
+        .post-item {
+            border: 1px solid #6366f1;
+            padding: 20px;
+            width: 80%;
+            
+        }
+        .post-title {
+            font-size: 34px;
+            padding: 10px;
+        }
+        .post-author {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary p-3">
+  <div class="container-fluid">
+    <span class="navbar-brand">Navbar</span>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/dashboard">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Posts</a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+      </ul>
+      <form class="d-flex" method="post">
+    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="text">
+
+    <select class="form-select me-2" name="name">
+        <option value="all">All</option>
+        <option value="title">Title</option>
+        <option value="author">Author</option>
+        <option value="tags">Tag</option>
+    </select>
+
+    <button class="btn btn-outline-light" type="submit">Search</button>
+    </form>
+
+    </div>
+  </div>
+</nav>
+
+    <div class="post-container">
+        {% for post in posts %}
+        <div class="post-item">
+            <div class="post-title">{{ post.title }}</div>
+            <div class="post-author">Posted by: {{ post.author.username }}</div>
+            <div class="post-content">{{ post.content }}</div>
+            <div class="contaier">
+                {% for tag in post.tags %}
+                  <span class="text-primary">#{{tag.name}}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

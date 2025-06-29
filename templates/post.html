@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        .contaier{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    
+    <form class="container" method="post">
+        {{form.hidden_tag()}}
+        <div>
+        {{form.title.label}}
+        {{form.title}}
+        {% for error in form.title.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+    </div>
+    <div>
+        {{form.post.label}}
+        {{form.post}}
+    </div>
+    <div>
+        {{form.submit()}}
+    </div>
+    </form>
+</body>
+</html>
