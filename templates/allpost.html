@@ -42,23 +42,29 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary p-3">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
   <div class="container-fluid">
-    <span class="navbar-brand">Navbar</span>
+    <span class="navbar-brand">BlogTracker</span>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/dashboard">Home</a>
-        </li>
+          <a class="nav-link text-light" href="/dashboard">Home</a>
+          </li>
+          <li class="nav-item">
+          <a class="nav-link text-light" href="/mypost">My Post</a>
+          </li>
+          <li class="nav-item">
+          <a class="nav-link text-light" href="/drafts">Draft</a>
+          </li>
         <li class="nav-item">
-          <a class="nav-link" href="/posts">Posts</a>
+          <a class="nav-link text-light" href="/posts">Posts</a>
         </li>
         
         <li class="nav-item">
-          <a class="nav-link" href="/logout">Logout</a>
+          <a class="nav-link text-danger" href="/logout">Logout</a>
         </li>
       </ul>
       <form class="d-flex" method="post">
@@ -79,6 +85,16 @@
 </nav>
 
     <div class="post-container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
         {% for post in posts %}
         <div class="post-item">
             <div class="post-title">{{ post.title }}</div>

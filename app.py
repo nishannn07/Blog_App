@@ -31,17 +31,13 @@ def index():
     if 'id' not in session:
         flash("Please log in first", "warning")
         return redirect(url_for('login'))
-
-    posts = post_controller.list_posts(session['id'])
-    drafts=post_controller.list_draft(session['id'])
-    draft_forms = [PostForm.from_draft(d) for d in drafts]
-    combined = list(zip(draft_forms, drafts))
+    
     form = PostForm()
     # if form.validate_on_submit():
     #     new_post = Post(title=form.title.data, content=form.post.data, user_id=session['id'])
     #     db.session.add(new_post)
     #     db.session.commit()
-    return render_template('home.html', username=session['uname'], posts=posts, form=form, combined=combined)
+    return render_template('home.html', username=session['uname'], form=form)
     # return post_controller.list_posts(session['id'])
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -89,6 +85,19 @@ def delete_post(post_id):
     flash('Post deleted', 'success')
     return redirect(url_for('index'))
 
+@app.route('/drafts', methods=['GET', 'POST'])
+def getDraft():
+    if 'id' not in session:
+        flash("Please log in first", "warning")
+        return redirect(url_for('login'))
+    
+    drafts=post_controller.list_draft(session['id'])
+    draft_forms = [PostForm.from_draft(d) for d in drafts]
+    combined = list(zip(draft_forms, drafts))
+    if not drafts:
+        flash('No Draft Available!', 'warning')
+    return render_template('draft.html', combined=combined)
+
 @app.route('/update_draft/<int:draft_id>', methods=['POST'])
 def update_draft(draft_id):
     form = PostForm()
@@ -103,14 +112,30 @@ def getPosts():
     if request.method == 'POST':
         
         posts = post_controller.search(request.form.get('text'), request.form.get('name'))
+        if not posts: 
+            flash("No content found", 'danger')
         return render_template('allpost.html', posts=posts)
     
     posts = post_controller.all_post()
     return render_template('allpost.html', posts=posts)
+
+@app.route('/mypost')
+def myPost():
+    if 'id' not in session:
+        flash("Please log in first", "warning")
+        return redirect(url_for('login'))
+    
+    posts = post_controller.list_posts(session['id'])
+    if not posts: 
+        flash("Nothing Posted!", 'info')
+    
+    return render_template('userpost.html', posts=posts)
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
 # from flask_restful import Api
 
 # api = Api(app)

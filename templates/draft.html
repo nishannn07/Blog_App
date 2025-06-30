@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}All Drafts{% endblock %}
+
+{% block content %}
+    <div class="post-container">
+      <h1>Drafts</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% for f, draft in combined %}
+            <form class="form-container" method="POST" action="{{ url_for('update_draft', draft_id=draft.id) }}">
+                {{ f.hidden_tag() }}
+                
+                <div>
+                  {{ f.title.label }} {{ f.title(class="form-control") }}
+                  {{ f.post.label }} {{ f.post(class="form-control") }}
+                  <label for="">Tags</label>
+                  <div class="d-flex flex-sm-nowrap">
+                    {{ f.tag1() }} {{ f.tag2() }} {{ f.tag3() }}
+                  </div>
+                </div>
+                
+                <div>
+                  {{ f.submit(class="btn btn-primary") }}
+                  {{ f.draft(class="btn btn-secondary") }}
+                </div>
+                
+            </form>
+        
+        {% endfor %}
+    </div>
+{% endblock %}
