@@ -10,7 +10,7 @@ def search(text, name):
     if name == 'all':
         return Post.query.filter_by(is_deleted=False, is_published=True)
     if name == 'author':
-        return Post.query.filter().join(Post.author).filter(User.username.ilike(f"%{text}%"), Post.is_deleted==False, Post.is_published==True).all()
+        return Post.query.join(Post.author).filter(User.username.ilike(f"%{text}%"), Post.is_deleted==False, Post.is_published==True).all()
     if name == 'tags':
         return Post.query.join(Post.tags).filter(Tag.name.ilike(f"%{text}%")).all()
     return Post.query.filter(Post.is_deleted == False, Post.is_published == True, getattr(Post, name).ilike(f"%{text}%")).all()

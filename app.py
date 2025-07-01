@@ -18,15 +18,19 @@ migrate = Migrate(app, db)
 from model.models import *
 from controller import post_controller, auth_controller
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def main():
+    return redirect(url_for('getPosts'))
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     form = Login()
     if form.validate_on_submit():
         auth_controller.user_login(form)
-        return redirect(url_for('index'))
+        return redirect(url_for('myPost'))
     return render_template('Login.html', form=form)
     
-@app.route('/dashboard')
+@app.route('/addpost')
 def index():
     if 'id' not in session:
         flash("Please log in first", "warning")
@@ -113,7 +117,7 @@ def getPosts():
         
         posts = post_controller.search(request.form.get('text'), request.form.get('name'))
         if not posts: 
-            flash("No content found", 'danger')
+            flash("No content found", 'info')
         return render_template('allpost.html', posts=posts)
     
     posts = post_controller.all_post()
@@ -126,15 +130,20 @@ def myPost():
         return redirect(url_for('login'))
     
     posts = post_controller.list_posts(session['id'])
+    formval = [PostForm.from_draft(p) for p in posts]
+    combined=list(zip(formval, posts))
+    # drafts=post_controller.list_draft(session['id'])
+    # draft_forms = [PostForm.from_draft(d) for d in drafts]
+    # combined = list(zip(draft_forms, drafts))
     if not posts: 
         flash("Nothing Posted!", 'info')
     
-    return render_template('userpost.html', posts=posts)
+    return render_template('userpost.html', combined=combined)
 
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('getPosts'))
 
 # from flask_restful import Api
 
