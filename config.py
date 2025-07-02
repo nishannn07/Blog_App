@@ -9,5 +9,5 @@ class Config:
     MAIL_SERVER='smtp.gmail.com'
     MAIL_PORT=587
     MAIL_USE_TLS=True
-    MAIL_USERNAME='aks1perman@gmail.com'
-    MAIL_PASSWORD='sfvx gteg cvpt wdud'
+    MAIL_USERNAME='xyz@gmail.com'
+    MAIL_PASSWORD='xxxx xxxx xxxx xxxx'
