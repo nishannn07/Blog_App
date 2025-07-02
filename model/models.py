@@ -51,4 +51,8 @@ class Tag(db.Model):
     name = db.Column(db.String(200), nullable=False, default='post')
 
 
-
+class Token(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    token = db.Column(db.Integer)
+    

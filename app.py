@@ -2,9 +2,10 @@ from flask import Flask, render_template, redirect, request, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
-from forms import UserForm, Login
+from forms import *
 from postForm import PostForm
 from flask_restful import Resource
+from flask_mailman import Mail
 
 # class HelloWorld(Resource):
 #     def get(self):
@@ -12,7 +13,7 @@ from flask_restful import Resource
 
 app = Flask(__name__)
 app.config.from_object(Config)
-
+mail = Mail(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 from model.models import *
@@ -140,6 +141,35 @@ def myPost():
     
     return render_template('userpost.html', combined=combined)
 
+@app.route('/resetpasswrod', methods=['GET', 'POST'])
+def forgetpass():
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        auth_controller.send_password_reset_email(form.email.data)
+        return redirect(url_for('login'))
+    return render_template('reset_request.html', form=form)
+
+@app.route("/reset_password/<token>", methods=['GET', 'POST'])
+def reset_token(token):
+    user_id = auth_controller.get_user_id_by_reset_token(token)
+
+    if user_id is None:
+        flash('That is an invalid token.', 'warning')
+        return redirect(url_for('forgetpass'))
+    
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        User.query.filter_by(id=user_id).update({
+            'password':form.password.data
+        })
+        db.session.commit()
+        Token.query.filter_by(token=int(token)).delete()
+        db.session.commit()
+        flash("Password updated Successfully", 'success')
+        return redirect(url_for('login'))
+    
+    return render_template('reset_token.html', form=form)
+
 @app.route('/logout')
 def logout():
     session.clear()
@@ -151,4 +181,4 @@ def logout():
 # api.add_resource(HelloWorld, '/api/hello', endpoint='hello_world')
 
 if __name__ == '__main__':
-    app.route(debug=True)
+    app.run(debug=True)
